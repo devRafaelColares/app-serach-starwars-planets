@@ -1,5 +1,5 @@
 import React from 'react';
-import usePlanetsHook from './PlanetsHook/planetsHook';
+import usePlanetsHook from '../../Hooks/planetsHook';
 
 interface Column {
   key: string;
@@ -30,24 +30,26 @@ function Table() {
   }
 
   return (
-    <table>
-      <thead>
-        <tr>
-          {columns.map(({ key, label }) => (
-            <th key={ key }>{label}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {planets.map((planet) => (
-          <tr key={ planet.name }>
-            {columns.map(({ key }) => (
-              <td key={ `${planet.name}-${key}` }>{planet[key]}</td>
+    <div>
+      <table>
+        <thead>
+          <tr>
+            {columns.map(({ key, label }) => (
+              <th key={ key }>{label}</th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {planets.map((planet) => (
+            <tr key={ planet.name }>
+              {columns.map(({ key }) => (
+                <td key={ `${planet.name}-${key}` }>{planet[key]}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
