@@ -4,7 +4,9 @@ import useFetch from '../Hooks/useFetch';
 import { Planet, PlanetsProviderProps } from '../Types';
 
 function PlanetsProvider({ children }: PlanetsProviderProps) {
-  const [planets, setPlanets] = useState<Planet[]>([]); // Especifique o tipo como Planet[]
+  const [planets, setPlanets] = useState<Planet[]>([]);
+  const [filteredPlanets, setFilteredPlanets] = useState<Planet[]>([]);
+
   const { data, loading, error } = useFetch('https://swapi.dev/api/planets/');
 
   useEffect(() => {
@@ -13,11 +15,19 @@ function PlanetsProvider({ children }: PlanetsProviderProps) {
         .map(({ residents, ...filteredPlanet }) => filteredPlanet);
 
       setPlanets(filteredData);
+      setFilteredPlanets(filteredData);
     }
   }, [data]);
 
   return (
-    <PlanetsContext.Provider value={ { planets, loading, error } }>
+    <PlanetsContext.Provider
+      value={ {
+        filteredPlanets,
+        setFilteredPlanets,
+        planets,
+        loading,
+        error } }
+    >
       {children}
     </PlanetsContext.Provider>
   );
