@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import PlanetsContext from '../../context/PlanetsContext';
 
-function Filters() {
+function FilterByName() {
   const [filterValue, setFilterValue] = useState('');
   const { planets, setFilteredPlanets } = useContext(PlanetsContext);
 
@@ -31,4 +31,4 @@ function Filters() {
   );
 }
 
-export default Filters;
+export default FilterByName;

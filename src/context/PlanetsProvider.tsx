@@ -7,6 +7,12 @@ function PlanetsProvider({ children }: PlanetsProviderProps) {
   const [planets, setPlanets] = useState<Planet[]>([]);
   const [filteredPlanets, setFilteredPlanets] = useState<Planet[]>([]);
 
+  const [numericFilter, setNumericFilter] = useState({
+    column: 'population',
+    comparison: 'maior que',
+    value: '',
+  });
+
   const { data, loading, error } = useFetch('https://swapi.dev/api/planets/');
 
   useEffect(() => {
@@ -26,6 +32,8 @@ function PlanetsProvider({ children }: PlanetsProviderProps) {
         setFilteredPlanets,
         planets,
         loading,
+        numericFilter,
+        setNumericFilter,
         error } }
     >
       {children}

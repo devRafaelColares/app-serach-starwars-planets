@@ -1,13 +1,15 @@
 import React from 'react';
 import Table from './components/Table/Table';
 import './components/Table/Table.css';
-import Filters from './components/Filters/Filters';
+import NumericFilter from './components/Filters/NumericFilter';
+import FilterByName from './components/Filters/FilterByName';
 
 function App() {
   return (
     <div>
       <h1>Star Wars Planets</h1>
-      <Filters />
+      <FilterByName />
+      <NumericFilter />
       <Table />
     </div>
   );
