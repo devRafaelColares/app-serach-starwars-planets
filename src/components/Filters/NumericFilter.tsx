@@ -3,7 +3,14 @@ import PlanetsContext from '../../context/PlanetsContext';
 import useNumericFilter from '../../Hooks/useNumericFilter';
 
 function NumericFilter() {
-  const { setFilteredPlanets, planets, setFilter, filter } = useContext(PlanetsContext);
+  const {
+    setFilteredPlanets,
+    planets,
+    setFilter,
+    filter,
+    filteredPlanets: currentFilteredPlanets,
+  } = useContext(PlanetsContext);
+
   const { numericFilter, setNumericFilter, applyNumericFilter } = useNumericFilter();
 
   const handleChange = (event: React
@@ -13,17 +20,18 @@ function NumericFilter() {
   };
 
   const handleFilterClick = () => {
-    const filteredPlanetsList = applyNumericFilter(planets);
-    setFilteredPlanets(filteredPlanetsList);
-    setFilter(usedFilters);
+    const newFilteredPlanetsList = applyNumericFilter(planets);
+    const combinedFilteredPlanetsList = currentFilteredPlanets.length
+      ? newFilteredPlanetsList.filter((planet: any) => currentFilteredPlanets
+        .some((prevPlanet: any) => prevPlanet.name === planet.name))
+      : newFilteredPlanetsList;
+
+    setFilteredPlanets(combinedFilteredPlanetsList);
+    setFilter((prevFilters: any) => [...prevFilters, usedFilters]);
   };
 
-  const { column } = numericFilter;
-  const { comparison } = numericFilter;
-  const { value } = numericFilter;
+  const { column, comparison, value } = numericFilter;
   const usedFilters = `${column} ${comparison} ${value}`;
-
-  console.log(usedFilters);
 
   return (
     <div>
