@@ -6,6 +6,7 @@ import { Planet, PlanetsProviderProps } from '../Types';
 function PlanetsProvider({ children }: PlanetsProviderProps) {
   const [planets, setPlanets] = useState<Planet[]>([]);
   const [filteredPlanets, setFilteredPlanets] = useState<Planet[]>([]);
+  const [filter, setFilter] = useState('');
 
   const [numericFilter, setNumericFilter] = useState({
     column: 'population',
@@ -34,6 +35,8 @@ function PlanetsProvider({ children }: PlanetsProviderProps) {
         loading,
         numericFilter,
         setNumericFilter,
+        filter,
+        setFilter,
         error } }
     >
       {children}

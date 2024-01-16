@@ -3,7 +3,7 @@ import PlanetsContext from '../../context/PlanetsContext';
 import useNumericFilter from '../../Hooks/useNumericFilter';
 
 function NumericFilter() {
-  const { setFilteredPlanets, planets } = useContext(PlanetsContext);
+  const { setFilteredPlanets, planets, setFilter, filter } = useContext(PlanetsContext);
   const { numericFilter, setNumericFilter, applyNumericFilter } = useNumericFilter();
 
   const handleChange = (event: React
@@ -15,53 +15,66 @@ function NumericFilter() {
   const handleFilterClick = () => {
     const filteredPlanetsList = applyNumericFilter(planets);
     setFilteredPlanets(filteredPlanetsList);
+    setFilter(usedFilters);
   };
+
+  const { column } = numericFilter;
+  const { comparison } = numericFilter;
+  const { value } = numericFilter;
+  const usedFilters = `${column} ${comparison} ${value}`;
+
+  console.log(usedFilters);
 
   return (
     <div>
-      <section>
-        <select
-          data-testid="column-filter"
-          name="column"
-          value={ numericFilter.column }
-          onChange={ handleChange }
-        >
-          <option value="population">population</option>
-          <option value="orbital_period">orbital_period</option>
-          <option value="diameter">diameter</option>
-          <option value="rotation_period">rotation_period</option>
-          <option value="surface_water">surface_water</option>
-        </select>
-      </section>
+      <div>
+        <section>
+          <select
+            data-testid="column-filter"
+            name="column"
+            value={ column }
+            onChange={ handleChange }
+          >
+            <option value="population">population</option>
+            <option value="orbital_period">orbital_period</option>
+            <option value="diameter">diameter</option>
+            <option value="rotation_period">rotation_period</option>
+            <option value="surface_water">surface_water</option>
+          </select>
+        </section>
 
-      <section>
-        <select
-          data-testid="comparison-filter"
-          name="comparison"
-          value={ numericFilter.comparison }
-          onChange={ handleChange }
-        >
-          <option value="maior que">maior que</option>
-          <option value="menor que">menor que</option>
-          <option value="igual a">igual a</option>
-        </select>
-      </section>
+        <section>
+          <select
+            data-testid="comparison-filter"
+            name="comparison"
+            value={ comparison }
+            onChange={ handleChange }
+          >
+            <option value="maior que">maior que</option>
+            <option value="menor que">menor que</option>
+            <option value="igual a">igual a</option>
+          </select>
+        </section>
 
-      <section>
-        <input
-          data-testid="value-filter"
-          type="number"
-          name="value"
-          value={ numericFilter.value }
-          onChange={ handleChange }
-        />
-      </section>
+        <section>
+          <input
+            data-testid="value-filter"
+            type="number"
+            name="value"
+            value={ value }
+            onChange={ handleChange }
+          />
+        </section>
 
-      <section>
-        <button data-testid="button-filter" onClick={ handleFilterClick }>
-          Filter
-        </button>
-      </section>
+        <section>
+          <button data-testid="button-filter" onClick={ handleFilterClick }>
+            Filter
+          </button>
+        </section>
+      </div>
+      <div>
+        <section>{ filter }</section>
+      </div>
     </div>
   );
 }
