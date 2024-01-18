@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import PlanetsContext from '../../context/PlanetsContext';
 import useNumericFilter from '../../Hooks/useNumericFilter';
+import usePlanetDataOptions from '../../Hooks/usePlanetDataOptions';
 
 function NumericFilter() {
   const {
@@ -9,9 +10,11 @@ function NumericFilter() {
     setFilter,
     filter,
     filteredPlanets: currentFilteredPlanets,
+    data,
   } = useContext(PlanetsContext);
 
   const { numericFilter, setNumericFilter, applyNumericFilter } = useNumericFilter();
+  const { options } = usePlanetDataOptions('https://swapi.dev/api/planets/');
 
   const handleChange = (event: React
     .ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
@@ -43,11 +46,17 @@ function NumericFilter() {
             value={ column }
             onChange={ handleChange }
           >
-            <option value="population">population</option>
-            <option value="orbital_period">orbital_period</option>
-            <option value="diameter">diameter</option>
-            <option value="rotation_period">rotation_period</option>
-            <option value="surface_water">surface_water</option>
+            {options.map((option) => (
+              <option key={ option } value={ option }>
+                {option}
+              </option>
+            ))}
+            {data
+      && Object.keys(data[0] || {}).map((key) => (
+        <option key={ key } value={ key }>
+          {key}
+        </option>
+      ))}
           </select>
         </section>
 
