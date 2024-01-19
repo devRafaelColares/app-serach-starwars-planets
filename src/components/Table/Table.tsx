@@ -12,8 +12,8 @@ function Table() {
     return <p>{error}</p>;
   }
 
-  const usedFilters = filteredPlanets;
-  console.log('usedFilters', usedFilters);
+  // const usedFilters = filteredPlanets;
+  // console.log('usedFilters', usedFilters);
   const columns = Object.keys(filteredPlanets[0] || {}).map((key) => ({
     key,
     label: key.charAt(0).toUpperCase() + key.slice(1),
