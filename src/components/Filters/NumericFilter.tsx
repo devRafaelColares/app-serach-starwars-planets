@@ -27,7 +27,9 @@ function NumericFilter() {
             'population',
             'orbital_period',
             'diameter',
-            'rotation_period', 'surface_water'].includes(key));
+            'rotation_period',
+            'surface_water',
+          ].includes(key));
 
         setAvailableOptions(filteredKeys);
       } catch (error) {
@@ -38,23 +40,23 @@ function NumericFilter() {
     fetchData();
   }, []);
 
-  const handleChange = (event: React
-    .ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement 
+    | HTMLInputElement>) => {
     const { name, value } = event.target;
 
     setNumericFilter((prevFilter: any) => ({ ...prevFilter, [name]: value }));
   };
 
   const handleFilterClick = () => {
-    const currentUsedFilters = `${numericFilter
-      .column} ${numericFilter.comparison} ${numericFilter.value}`;
+    const currentUsedFilters = `${numericFilter.column} 
+    ${numericFilter.comparison} ${numericFilter.value}`;
 
     if (!filter.includes(currentUsedFilters)) {
       const newFilteredPlanetsList = applyNumericFilter(planets);
 
       const combinedFilteredPlanetsList = currentFilteredPlanets.length
         ? newFilteredPlanetsList.filter((planet: any) => currentFilteredPlanets
-          .some((prevPlanet: any) => prevPlanet.name === planet.name))
+        .some((prevPlanet: any) => prevPlanet.name === planet.name))
         : newFilteredPlanetsList;
 
       setFilteredPlanets(combinedFilteredPlanetsList);
@@ -62,17 +64,40 @@ function NumericFilter() {
       setFilter((prevFilters: any) => [...prevFilters, currentUsedFilters]);
 
       setAvailableOptions((prevOptions) => {
-        const updatedOptions = prevOptions
-          .filter((option) => option !== numericFilter.column);
+        const updatedOptions = prevOptions.filter((option) => option !== numericFilter.column);
 
         if (updatedOptions.length > 0) {
-          setNumericFilter((prevFilter: any) => ({
-            ...prevFilter, column: updatedOptions[0] }));
+          setNumericFilter((prevFilter: any) => ({ ...prevFilter, column: updatedOptions[0] }));
         }
 
         return updatedOptions;
       });
     }
+  };
+
+  const handleRemoveFilter = (index: number) => {
+    const removedFilter = filter[index];
+    setFilter((prevFilters: any) => prevFilters.filter((_, i: number) => i !== index));
+
+    const updatedAvailableOptions = [...availableOptions, removedFilter.split(' ')[0]];
+    setAvailableOptions(updatedAvailableOptions);
+
+    // Remove the specific filter from the filtered planets
+    const remainingFilters = filter.filter((_, i: number) => i !== index);
+    const updatedFilteredPlanetsList = remainingFilters.reduce(
+      (filteredPlanets, filter) => applyNumericFilter(filteredPlanets, filter),
+      planets,
+    );
+    setFilteredPlanets(updatedFilteredPlanetsList);
+  };
+
+  const handleRemoveAllFilters = () => {
+    setFilter([]);
+    setFilteredPlanets(planets);
+    setAvailableOptions((prevOptions) => [
+      ...prevOptions,
+      ...filter.map((filter) => filter.split(' ')[0]),
+    ]);
   };
 
   return (
@@ -125,11 +150,25 @@ function NumericFilter() {
       <div>
         {Array.isArray(filter)
           && filter.map((prevFilter: any, index: any) => (
-            <section key={ index }>
+            <section key={ index } data-testid="filter">
               <span>{prevFilter}</span>
+              <button onClick={ () => handleRemoveFilter(index) }>Remove Filter</button>
             </section>
           ))}
+        {filter.length > 0 && (
+          <section data-testid="filter" />
+        )}
       </div>
+      {filter.length > 0 && (
+        <div>
+          <button
+            data-testid="button-remove-filters"
+            onClick={ handleRemoveAllFilters }
+          >
+            Remover todas filtragens
+          </button>
+        </div>
+      )}
     </div>
   );
 }
