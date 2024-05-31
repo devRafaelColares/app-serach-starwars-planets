@@ -7,7 +7,7 @@ function NumericFilter() {
     setFilteredPlanets,
     planets,
     setFilter,
-    filter,
+    filter: appliedFilters,
     filteredPlanets: currentFilteredPlanets,
   } = useContext(PlanetsContext);
 
@@ -22,14 +22,9 @@ function NumericFilter() {
 
         const keys = Object.keys(results[0]);
 
-        const filteredKeys = keys
-          .filter((key) => [
-            'population',
-            'orbital_period',
-            'diameter',
-            'rotation_period',
-            'surface_water',
-          ].includes(key));
+        const filteredKeys = keys.filter((key) => ['population',
+          'orbital_period',
+          'diameter', 'rotation_period', 'surface_water'].includes(key));
 
         setAvailableOptions(filteredKeys);
       } catch (error) {
@@ -40,8 +35,8 @@ function NumericFilter() {
     fetchData();
   }, []);
 
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement 
-    | HTMLInputElement>) => {
+  const handleChange = (event: React
+    .ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
     const { name, value } = event.target;
 
     setNumericFilter((prevFilter: any) => ({ ...prevFilter, [name]: value }));
@@ -51,12 +46,12 @@ function NumericFilter() {
     const currentUsedFilters = `${numericFilter.column} 
     ${numericFilter.comparison} ${numericFilter.value}`;
 
-    if (!filter.includes(currentUsedFilters)) {
+    if (!appliedFilters.includes(currentUsedFilters)) {
       const newFilteredPlanetsList = applyNumericFilter(planets);
 
-      const combinedFilteredPlanetsList = currentFilteredPlanets.length
+      const combinedFilteredPlanetsList = currentFilteredPlanets.length > 0
         ? newFilteredPlanetsList.filter((planet: any) => currentFilteredPlanets
-        .some((prevPlanet: any) => prevPlanet.name === planet.name))
+          .some((prevPlanet: any) => prevPlanet.name === planet.name))
         : newFilteredPlanetsList;
 
       setFilteredPlanets(combinedFilteredPlanetsList);
@@ -64,10 +59,12 @@ function NumericFilter() {
       setFilter((prevFilters: any) => [...prevFilters, currentUsedFilters]);
 
       setAvailableOptions((prevOptions) => {
-        const updatedOptions = prevOptions.filter((option) => option !== numericFilter.column);
+        const updatedOptions = prevOptions
+          .filter((option) => option !== numericFilter.column);
 
         if (updatedOptions.length > 0) {
-          setNumericFilter((prevFilter: any) => ({ ...prevFilter, column: updatedOptions[0] }));
+          setNumericFilter((prevFilter: any) => ({
+            ...prevFilter, column: updatedOptions[0] }));
         }
 
         return updatedOptions;
@@ -76,18 +73,23 @@ function NumericFilter() {
   };
 
   const handleRemoveFilter = (index: number) => {
-    const removedFilter = filter[index];
-    setFilter((prevFilters: any) => prevFilters.filter((_, i: number) => i !== index));
+    const removedFilter = appliedFilters[index];
+
+    setFilter((prevFilters: any) => prevFilters
+      .filter((_: any, i: number) => i !== index));
 
     const updatedAvailableOptions = [...availableOptions, removedFilter.split(' ')[0]];
     setAvailableOptions(updatedAvailableOptions);
 
-    // Remove the specific filter from the filtered planets
-    const remainingFilters = filter.filter((_, i: number) => i !== index);
+    // Remove the specific filter from the applied filters
+    const remainingFilters = appliedFilters.filter((_: any, i: number) => i !== index);
+
+    // Apply the remaining filters to get the updated filtered list
     const updatedFilteredPlanetsList = remainingFilters.reduce(
-      (filteredPlanets, filter) => applyNumericFilter(filteredPlanets, filter),
+      (filteredPlanets: any, filter: any) => applyNumericFilter(filteredPlanets, filter),
       planets,
     );
+
     setFilteredPlanets(updatedFilteredPlanetsList);
   };
 
@@ -96,7 +98,7 @@ function NumericFilter() {
     setFilteredPlanets(planets);
     setAvailableOptions((prevOptions) => [
       ...prevOptions,
-      ...filter.map((filter) => filter.split(' ')[0]),
+      ...appliedFilters.map((filter: any) => filter.split(' ')[0]),
     ]);
   };
 
@@ -148,27 +150,19 @@ function NumericFilter() {
         </section>
       </div>
       <div>
-        {Array.isArray(filter)
-          && filter.map((prevFilter: any, index: any) => (
+        {Array.isArray(appliedFilters)
+          && appliedFilters.map((prevFilter: any, index: any) => (
             <section key={ index } data-testid="filter">
               <span>{prevFilter}</span>
               <button onClick={ () => handleRemoveFilter(index) }>Remove Filter</button>
             </section>
           ))}
-        {filter.length > 0 && (
-          <section data-testid="filter" />
+        {appliedFilters.length > 0 && (
+          <section data-testid="remove-all-filters-section">
+            <button onClick={ handleRemoveAllFilters }>Remover todas filtragens</button>
+          </section>
         )}
       </div>
-      {filter.length > 0 && (
-        <div>
-          <button
-            data-testid="button-remove-filters"
-            onClick={ handleRemoveAllFilters }
-          >
-            Remover todas filtragens
-          </button>
-        </div>
-      )}
     </div>
   );
 }

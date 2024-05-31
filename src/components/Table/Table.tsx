@@ -12,8 +12,6 @@ function Table() {
     return <p>{error}</p>;
   }
 
-  // const usedFilters = filteredPlanets;
-  // console.log('usedFilters', usedFilters);
   const columns = Object.keys(filteredPlanets[0] || {}).map((key) => ({
     key,
     label: key.charAt(0).toUpperCase() + key.slice(1),
@@ -30,10 +28,15 @@ function Table() {
           </tr>
         </thead>
         <tbody>
-          {filteredPlanets.map((planet: any) => (
+          {filteredPlanets.map((planet) => (
             <tr key={ planet.name }>
-              {columns.map(({ key }) => (
-                <td key={ `${planet.name}-${key}` }>{planet[key]}</td>
+              {columns.map(({ key, label }) => (
+                <td
+                  key={ `${planet.name}-${key}` }
+                  data-testid={ key === 'name' ? 'planet-name' : null }
+                >
+                  {planet[key]}
+                </td>
               ))}
             </tr>
           ))}
